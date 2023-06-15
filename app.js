@@ -8,6 +8,7 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.use("/chess", require("./control/ChessAPI"))
+app.use("/chess", require("./control/InstallAPI"))
 
 app.listen(process.env.PORT, () => {
     console.log("Listenning...")
