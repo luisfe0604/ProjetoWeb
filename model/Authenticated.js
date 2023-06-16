@@ -10,21 +10,22 @@ const Authentication = sequelize.define('login',
         cpf: DataTypes.STRING,
         user: DataTypes.STRING,
         pass: DataTypes.STRING,
-        coach: DataTypes.BOOLEAN
+        coach: DataTypes.BOOLEAN,
+        rating: DataTypes.INTEGER
     }
 )
 
 Authentication.belongsTo(GameModel.Model, {
     foreignKey: 'game'
 })
-GameModel.Model.belongsTo(Authentication, {
+GameModel.Model.hasMany(Authentication, {
     foreignKey: 'game'
 })
 
 Authentication.belongsTo(TournamentModel.Model, {
     foreignKey: 'tournamentId'
 })
-TournamentModel.Model.belongsTo(Authentication, {
+TournamentModel.Model.hasMany(Authentication, {
     foreignKey: 'tournamentId'
 })
 
@@ -43,6 +44,7 @@ module.exports = {
         throw error
     }
     },
+
     list: async function() {
         const users = await Authentication.findAll( {include: GameModel.Model}, {include: TournamentModel.Model} )
         return users
@@ -85,14 +87,14 @@ module.exports = {
         return users
     },
 
-    update: async function(id, obj) {
+    update: async function(id, member) {
         
         let users = await Authentication.findByPk(id)
         if (!users) {
             return false
         }
         
-        Object.keys(obj).forEach(key => users[key] = obj[key])
+        Object.keys(member).forEach(key => users[key] = member[key])
         await users.save()
         return users
     },
