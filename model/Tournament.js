@@ -31,9 +31,9 @@ module.exports = {
         return competitions
     },
 
-    update: async function(id, obj) {
+    update: async function(tournamentId, obj) {
         
-        let competitions = await Tournament.findByPk(id)
+        let competitions = await Tournament.findByPk(tournamentId)
         if (!competitions) {
             return false
         }
@@ -43,8 +43,8 @@ module.exports = {
         return competitions
     },
 
-    delete: async function(id) {
-        const competitions = await Tournament.findByPk(id)
+    delete: async function(tournamentId) {
+        const competitions = await Tournament.findByPk(tournamentId)
         return competitions.destroy()
     },
 

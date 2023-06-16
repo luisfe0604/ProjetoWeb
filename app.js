@@ -10,6 +10,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use("/chess", require("./control/ChessAPI"))
 app.use("/chess", require("./control/InstallAPI"))
 app.use("/chess", require("./control/UserAPI"))
+app.use("/chess", require("./control/TournamentAPI"))
 
 app.listen(process.env.PORT, () => {
     console.log("Listenning...")
