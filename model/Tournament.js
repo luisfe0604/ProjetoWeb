@@ -16,8 +16,8 @@ const Tournament = sequelize.define('competition',
 )
 
 module.exports = {
-    list: async function() {
-        const competitions = await Tournament.findAll()
+    list: async function(limit, offset) {
+        const competitions = await Tournament.findAll( { limit: limit, offset: offset } )
         return competitions
     },
     

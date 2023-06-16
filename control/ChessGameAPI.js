@@ -2,23 +2,32 @@ const express = require("express")
 const router = express.Router()
 
 const {sucess, fail} = require("../helpers/answer")
-const ChessGameDAO = require("../model/Tournament")
+const ChessGameDAO = require("../model/ChessGame")
 const ValidateToken = require("../validate/token")
 
 
-//---------------ROTA DE LISTAR TORNEIOS---------------
-router.get("/game/list", ValidateToken.validateToken, (req, res) => {
+//---------------ROTA DE LISTAR PARTIDAS---------------
+router.get("/game/list", ValidateToken.validateToken, async (req, res) => {
 
-    ChessGameDAO.list()
+    let limit = 5
+    let page = req.query.page
+    
+    if(!page){
+        page = 1
+    }
+
+    let offset = (limit * page) - limit
+
+    ChessGameDAO.list(limit, offset)
     .then(list => {
         res.json(sucess(list))
     }).catch(err => {
         console.log(err)
-        res.status(500).json(fail("Falha ao listar torneios"))
+        res.status(500).json(fail("Falha ao listar partidas"))
     })
 })
 
-//---------------ROTA DE CADASTRO DE TORNEIO---------------
+//---------------ROTA DE CADASTRO DE PARTIDAS---------------
 router.post("/game/register", ValidateToken.validateToken, ValidateToken.isCoach, (req, res) => {
 
     const {player1, player2, winner, time, moves} = req.body
@@ -31,7 +40,7 @@ router.post("/game/register", ValidateToken.validateToken, ValidateToken.isCoach
     })
 })
 
-//---------------ROTA DE UPDATE DE TORNEIO---------------
+//---------------ROTA DE UPDATE DE PARTIDAS---------------
 router.put("/game/alter/:id", ValidateToken.validateToken, ValidateToken.isCoach, async(req, res) => {
 
     const {id} = req.params
@@ -56,7 +65,7 @@ router.put("/game/alter/:id", ValidateToken.validateToken, ValidateToken.isCoach
     })
 })
 
-//---------------ROTA DE DELETE DE TORNEIO---------------
+//---------------ROTA DE DELETE DE PARTIDAS---------------
 router.delete("/game/delete/:id", ValidateToken.validateToken, ValidateToken.isCoach, (req, res) => {
     ChessGameDAO.delete(req.params.id).then(chessGame => {
         if (chessGame)

@@ -17,8 +17,8 @@ const ChessGame = sequelize.define('chessGame',
 )
 
 module.exports = {
-    list: async function() {
-        const games = await ChessGame.findAll()
+    list: async function(limit, offset) {
+        const games = await ChessGame.findAll( { limit: limit, offset: offset } )
         return games
     },
     

@@ -9,7 +9,16 @@ const ValidateToken = require("../validate/token")
 //---------------ROTA DE LISTAR TORNEIOS---------------
 router.get("/tournament/list", ValidateToken.validateToken, (req, res) => {
 
-    TournamentDAO.list()
+    let limit = 5
+    let page = req.query.page
+    
+    if(!page){
+        page = 1
+    }
+
+    let offset = (limit * page) - limit
+
+    TournamentDAO.list(limit, offset)
     .then(list => {
         res.json(sucess(list))
     }).catch(err => {
