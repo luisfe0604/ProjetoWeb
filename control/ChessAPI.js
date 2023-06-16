@@ -6,9 +6,9 @@ const LoginDAO = require("../model/Authenticated")
 const jwt = require('jsonwebtoken')
 
 router.post('/login', async function(req, res) {
-    const {user, password, coach} = req.body
+    const {user, pass, coach} = req.body
 
-    const users = await LoginDAO.loginVerification(user, password)
+    const users = await LoginDAO.loginVerification(user, pass)
 
     if (users.length > 0) {
       let token = jwt.sign({user: user, coach: coach}, process.env.SECRET, {
