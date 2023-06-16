@@ -11,6 +11,7 @@ app.use("/chess", require("./control/ChessAPI"))
 app.use("/chess", require("./control/InstallAPI"))
 app.use("/chess", require("./control/UserAPI"))
 app.use("/chess", require("./control/TournamentAPI"))
+app.use("/chess", require("./control/ChessGameAPI"))
 
 app.listen(process.env.PORT, () => {
     console.log("Listenning...")
