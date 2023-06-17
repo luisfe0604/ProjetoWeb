@@ -6,7 +6,26 @@ const LoginDAO = require("../model/Authenticated")
 const ValidateToken = require("../validate/token")
 const UserValidator = require("../validate/UserValidator")
 
+//---------------ROTA DE LISTAR MEMBROS---------------
+router.get("/list", ValidateToken.validateToken, (req, res) => {
 
+    let limit = 5
+    let page = req.query.page
+    
+    if(!page){
+        page = 1
+    }
+
+    let offset = (limit * page) - limit
+
+    LoginDAO.list(limit, offset)
+    .then(list => {
+        res.json(sucess(list))
+    }).catch(err => {
+        console.log(err)
+        res.status(500).json(fail("Falha ao listar membros"))
+    })
+})
 //---------------ROTA DE CADASTRO---------------
 router.post("/register", ValidateToken.validateToken, UserValidator.validateInfo, ValidateToken.isCoach, (req, res) => {
 
@@ -60,10 +79,6 @@ router.delete("/delete/:id", ValidateToken.validateToken, UserValidator.validate
         console.log(err)
         res.status(500).json(fail("Falha ao excluir o usuário"))
     })
-})
-
-router.put("/alter", ValidateToken.validateToken, (req, res) => {
-    
 })
 
 module.exports = router

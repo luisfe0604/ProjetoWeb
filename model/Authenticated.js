@@ -49,6 +49,14 @@ module.exports = {
         const users = await Authentication.findAll( {include: GameModel.Model}, {include: TournamentModel.Model} )
         return users
     },
+
+    listByRating: async function() {
+    const users = await Authentication.findAll({
+      include: [GameModel.Model, TournamentModel.Model],
+      order: [['rating', 'DESC']]
+    });
+    return users
+},
     
     save: async function(name, age, cpf, user, pass, coach, rating, game, tournamentId) {
         if (game instanceof GameModel.Model) {
@@ -98,6 +106,45 @@ module.exports = {
         await users.save()
         return users
     },
+
+    findRating: async function(id) {
+          const user = await Authentication.findOne({
+            attributes: ['rating'],
+            where: {
+              id: id
+            }
+          });
+          if (!user) {
+            return false;
+          }
+          return user.rating;
+      },
+
+      findName: async function(id) {
+          const user = await Authentication.findOne({
+            attributes: ['name'],
+            where: {
+              id: id
+            }
+          });
+          if (!user) {
+            return false;
+          }
+          return user.name;
+      },
+
+      findGameId: async function(id) {
+          const user = await Authentication.findOne({
+            attributes: ['game'],
+            where: {
+              id: id
+            }
+          });
+          if (!user) {
+            return false;
+          }
+          return user.game;
+      },
 
     delete: async function(id) {
         const users = await Authentication.findByPk(id)
