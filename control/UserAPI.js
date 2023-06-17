@@ -4,10 +4,11 @@ const router = express.Router()
 const {sucess, fail} = require("../helpers/answer")
 const LoginDAO = require("../model/Authenticated")
 const ValidateToken = require("../validate/token")
+const UserValidator = require("../validate/UserValidator")
 
 
 //---------------ROTA DE CADASTRO---------------
-router.post("/register", ValidateToken.validateToken, ValidateToken.isCoach, (req, res) => {
+router.post("/register", ValidateToken.validateToken, UserValidator.validateInfo, ValidateToken.isCoach, (req, res) => {
 
     const {name, age, cpf, user, pass, coach, rating, game, tournamentId} = req.body
 
@@ -20,7 +21,8 @@ router.post("/register", ValidateToken.validateToken, ValidateToken.isCoach, (re
 })
 
 //---------------ROTA DE UPDATE---------------
-router.put("/alter/:id", ValidateToken.validateToken, async(req, res) => {
+router.put("/alter/:id", ValidateToken.validateToken, UserValidator.validateInfo, 
+            UserValidator.validateId, async(req, res) => {
 
     const {id} = req.params
 
@@ -48,7 +50,7 @@ router.put("/alter/:id", ValidateToken.validateToken, async(req, res) => {
 })
 
 //---------------ROTA DE DELETE---------------
-router.delete("/delete/:id", ValidateToken.validateToken, ValidateToken.isCoach, (req, res) => {
+router.delete("/delete/:id", ValidateToken.validateToken, UserValidator.validateId, ValidateToken.isCoach, (req, res) => {
     LoginDAO.delete(req.params.id).then(member => {
         if (member)
             res.json(sucess(member))

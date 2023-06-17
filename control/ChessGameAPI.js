@@ -4,6 +4,7 @@ const router = express.Router()
 const {sucess, fail} = require("../helpers/answer")
 const ChessGameDAO = require("../model/ChessGame")
 const ValidateToken = require("../validate/token")
+const ChessGameValidator = require("../validate/ChessGameValidator")
 
 
 //---------------ROTA DE LISTAR PARTIDAS---------------
@@ -28,7 +29,7 @@ router.get("/game/list", ValidateToken.validateToken, async (req, res) => {
 })
 
 //---------------ROTA DE CADASTRO DE PARTIDAS---------------
-router.post("/game/register", ValidateToken.validateToken, ValidateToken.isCoach, (req, res) => {
+router.post("/game/register", ValidateToken.validateToken, ChessGameValidator.validateInfo, ValidateToken.isCoach, (req, res) => {
 
     const {player1, player2, winner, time, moves} = req.body
 
@@ -41,7 +42,8 @@ router.post("/game/register", ValidateToken.validateToken, ValidateToken.isCoach
 })
 
 //---------------ROTA DE UPDATE DE PARTIDAS---------------
-router.put("/game/alter/:id", ValidateToken.validateToken, ValidateToken.isCoach, async(req, res) => {
+router.put("/game/alter/:id", ValidateToken.validateToken, ChessGameValidator.validateInfo, 
+            ChessGameValidator.validateId, ValidateToken.isCoach, async(req, res) => {
 
     const {id} = req.params
 
@@ -66,7 +68,7 @@ router.put("/game/alter/:id", ValidateToken.validateToken, ValidateToken.isCoach
 })
 
 //---------------ROTA DE DELETE DE PARTIDAS---------------
-router.delete("/game/delete/:id", ValidateToken.validateToken, ValidateToken.isCoach, (req, res) => {
+router.delete("/game/delete/:id", ValidateToken.validateToken, ChessGameValidator.validateId, ValidateToken.isCoach, (req, res) => {
     ChessGameDAO.delete(req.params.id).then(chessGame => {
         if (chessGame)
             res.json(sucess(chessGame))

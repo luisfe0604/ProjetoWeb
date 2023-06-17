@@ -4,6 +4,7 @@ const router = express.Router()
 const {sucess, fail} = require("../helpers/answer")
 const TournamentDAO = require("../model/Tournament")
 const ValidateToken = require("../validate/token")
+const TournamentValidator = require("../validate/TournamentValidator")
 
 
 //---------------ROTA DE LISTAR TORNEIOS---------------
@@ -28,7 +29,7 @@ router.get("/tournament/list", ValidateToken.validateToken, (req, res) => {
 })
 
 //---------------ROTA DE CADASTRO DE TORNEIO---------------
-router.post("/tournament/register", ValidateToken.validateToken, ValidateToken.isCoach, (req, res) => {
+router.post("/tournament/register", ValidateToken.validateToken, TournamentValidator.validateInfo, ValidateToken.isCoach, (req, res) => {
 
     const {name, date, award, participants} = req.body
 
@@ -41,7 +42,8 @@ router.post("/tournament/register", ValidateToken.validateToken, ValidateToken.i
 })
 
 //---------------ROTA DE UPDATE DE TORNEIO---------------
-router.put("/tournament/alter/:id", ValidateToken.validateToken, ValidateToken.isCoach, async(req, res) => {
+router.put("/tournament/alter/:id", ValidateToken.validateToken, TournamentValidator.validateInfo, 
+            TournamentValidator.validateId, ValidateToken.isCoach, async(req, res) => {
 
     const {id} = req.params
 
@@ -65,7 +67,7 @@ router.put("/tournament/alter/:id", ValidateToken.validateToken, ValidateToken.i
 })
 
 //---------------ROTA DE DELETE DE TORNEIO---------------
-router.delete("/tournament/delete/:id", ValidateToken.validateToken, ValidateToken.isCoach, (req, res) => {
+router.delete("/tournament/delete/:id", ValidateToken.validateToken, TournamentValidator.validateId, ValidateToken.isCoach, (req, res) => {
     TournamentDAO.delete(req.params.id).then(tournament => {
         if (tournament)
             res.json(sucess(tournament))
