@@ -27,8 +27,8 @@ module.exports = {
       if (payload.coach === true) {
         next();
       } else {
-        res.status(403).json({ status: false, msg: 'Acesso negado - Não é um administrador' });
+        res.status(403).json({ status: false, msg: 'Acesso negado - Não é um treinador' });
       }
     })
-  }
+    }
 }

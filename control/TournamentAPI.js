@@ -6,6 +6,19 @@ const TournamentDAO = require("../model/Tournament")
 const ValidateToken = require("../validate/token")
 const TournamentValidator = require("../validate/TournamentValidator")
 
+//---------------ROTA DE BUSCAR TORNEIO---------------
+router.get("/tournament/search/:id", ValidateToken.validateToken, (req, res) => {
+
+    const {id} = req.params
+
+    TournamentDAO.getById(id)
+    .then(list => {
+        res.json(sucess(list))
+    }).catch(err => {
+        console.log(err)
+        res.status(500).json(fail("Falha ao listar torneio"))
+    })
+})
 
 //---------------ROTA DE LISTAR TORNEIOS---------------
 router.get("/tournament/list", ValidateToken.validateToken, (req, res) => {

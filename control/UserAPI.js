@@ -6,6 +6,20 @@ const LoginDAO = require("../model/Authenticated")
 const ValidateToken = require("../validate/token")
 const UserValidator = require("../validate/UserValidator")
 
+//---------------ROTA DE BUSCAR MEMBROS---------------
+router.get("/search/:id", ValidateToken.validateToken, (req, res) => {
+
+    const {id} = req.params
+
+    LoginDAO.getById(id)
+    .then(list => {
+        res.json(sucess(list))
+    }).catch(err => {
+        console.log(err)
+        res.status(500).json(fail("Falha ao listar membro"))
+    })
+})
+
 //---------------ROTA DE LISTAR MEMBROS---------------
 router.get("/list", ValidateToken.validateToken, (req, res) => {
 
@@ -45,7 +59,13 @@ router.put("/alter/:id", ValidateToken.validateToken, UserValidator.validateInfo
 
     const {id} = req.params
 
-    const {name, age, cpf, user, pass, rating, game, tournamentId} = req.body
+    const {name, age, cpf, user, pass, rating, game, tournamentId} = req.body   
+
+    const userName = await LoginDAO.findUser(id)
+
+    if(!req.coach && userName != req.user){
+        return res.status(403).json(fail({msg:" Acesso negado, membro comum só pode alterar as próprias informações!"}))
+    }
 
     let member = {}
     if(name) member.name = name

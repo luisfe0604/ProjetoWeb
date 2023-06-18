@@ -35,6 +35,12 @@ router.put("/rating/alterRating/:id", ValidateToken.validateToken, UserValidator
     const {id} = req.params
     const {game, opponentRating} = req.body
 
+    const userName = await LoginDAO.findUser(id)
+
+    if(!req.coach && userName != req.user){
+        return res.status(403).json(fail({msg:" Acesso negado, membro comum só pode alterar as próprias informações!"}))
+    }
+
     let rating = await LoginDAO.findRating(id)
     let playerName = await LoginDAO.findName(id)
     let player1 = await ChessGameDAO.findPlayer1(game)

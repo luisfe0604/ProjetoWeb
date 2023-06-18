@@ -6,7 +6,19 @@ const ChessGameDAO = require("../model/ChessGame")
 const ValidateToken = require("../validate/token")
 const ChessGameValidator = require("../validate/ChessGameValidator")
 
+//---------------ROTA DE BUSCAR PARTIDAS---------------
+router.get("/game/search/:id", ValidateToken.validateToken, (req, res) => {
 
+    const {id} = req.params
+
+    ChessGameDAO.getById(id)
+    .then(list => {
+        res.json(sucess(list))
+    }).catch(err => {
+        console.log(err)
+        res.status(500).json(fail("Falha ao listar partida"))
+    })
+})
 //---------------ROTA DE LISTAR PARTIDAS---------------
 router.get("/game/list", ValidateToken.validateToken, async (req, res) => {
 

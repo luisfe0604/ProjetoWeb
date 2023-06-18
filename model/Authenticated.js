@@ -108,42 +108,55 @@ module.exports = {
     },
 
     findRating: async function(id) {
-          const user = await Authentication.findOne({
+          const users = await Authentication.findOne({
             attributes: ['rating'],
             where: {
               id: id
             }
           });
-          if (!user) {
+          if (!users) {
             return false;
           }
-          return user.rating;
+          return users.rating;
       },
 
       findName: async function(id) {
-          const user = await Authentication.findOne({
+          const users = await Authentication.findOne({
             attributes: ['name'],
             where: {
               id: id
             }
           });
-          if (!user) {
+          if (!users) {
             return false;
           }
-          return user.name;
+          return users.name;
       },
 
+      findUser: async function(id) {
+        const users = await Authentication.findOne({
+          attributes: ['user'],
+          where: {
+            id: id
+          }
+        });
+        if (!users) {
+          return false;
+        }
+        return users.user;
+    },
+
       findGameId: async function(id) {
-          const user = await Authentication.findOne({
+          const users = await Authentication.findOne({
             attributes: ['game'],
             where: {
               id: id
             }
           });
-          if (!user) {
+          if (!users) {
             return false;
           }
-          return user.game;
+          return users.game;
       },
 
     delete: async function(id) {
