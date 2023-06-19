@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 
 module.exports = {
+  //----------VALIDACAO DO TOKEN---------------
   validateToken(req, res, next) {
     let token = req.headers['authorization']
     if (!token)
@@ -15,6 +16,8 @@ module.exports = {
       next()
     })
   },
+
+  //------------VERIFICA SE É UM TOKEN DE COACH-----------
   isCoach(req, res, next) {
 
     const token = req.headers.authorization;
@@ -30,5 +33,5 @@ module.exports = {
         res.status(403).json({ status: false, msg: 'Acesso negado - Não é um treinador' });
       }
     })
-    }
+  }
 }

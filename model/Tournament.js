@@ -1,7 +1,7 @@
-const {Sequelize, DataTypes, where} = require("sequelize")
+const { Sequelize, DataTypes, where } = require("sequelize")
 const sequelize = require("../helpers/pg")
 
-const Tournament = sequelize.define('competition', 
+const Tournament = sequelize.define('competition',
     {
         tournamentId: {
             type: DataTypes.INTEGER,
@@ -16,12 +16,12 @@ const Tournament = sequelize.define('competition',
 )
 
 module.exports = {
-    list: async function(limit, offset) {
-        const competitions = await Tournament.findAll( { limit: limit, offset: offset } )
+    list: async function (limit, offset) {
+        const competitions = await Tournament.findAll({ limit: limit, offset: offset })
         return competitions
     },
-    
-    save: async function(name, date, award, participants) {
+
+    save: async function (name, date, award, participants) {
         const competitions = await Tournament.create({
             name: name,
             date: date,
@@ -31,24 +31,24 @@ module.exports = {
         return competitions
     },
 
-    update: async function(tournamentId, obj) {
-        
+    update: async function (tournamentId, obj) {
+
         let competitions = await Tournament.findByPk(tournamentId)
         if (!competitions) {
             return false
         }
-        
+
         Object.keys(obj).forEach(key => competitions[key] = obj[key])
         await competitions.save()
         return competitions
     },
 
-    delete: async function(tournamentId) {
+    delete: async function (tournamentId) {
         const competitions = await Tournament.findByPk(tournamentId)
         return competitions.destroy()
     },
 
-    getById: async function(tournamentId) {
+    getById: async function (tournamentId) {
         return await Tournament.findByPk(tournamentId)
     },
 
