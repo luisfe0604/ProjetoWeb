@@ -21,17 +21,22 @@ router.get("/search/:id", ValidateToken.validateToken, (req, res) => {
 })
 
 //---------------ROTA DE LISTAR MEMBROS---------------
-router.get("/list", ValidateToken.validateToken, (req, res) => {
+router.get("/list", ValidateToken.validateToken, async (req, res) => {
 
     let limit = 5
-    let page = req.query.page
+    let page = req.body
 
-    if (!page) {
-        page = 1
+    if (!page.page) {
+        page.page = 1
     }
 
-    let offset = (limit * page) - limit
+    let validaPage = (await LoginDAO.Model.count())/page.page
 
+    if(page.page > validaPage){
+        page.page = validaPage
+    }
+
+    let offset = (limit * page.page) - limit
     LoginDAO.list(limit, offset)
         .then(list => {
             res.json(sucess(list))

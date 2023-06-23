@@ -21,16 +21,22 @@ router.get("/tournament/search/:id", ValidateToken.validateToken, (req, res) => 
 })
 
 //---------------ROTA DE LISTAR TORNEIOS---------------
-router.get("/tournament/list", ValidateToken.validateToken, (req, res) => {
+router.post("/tournament/list", ValidateToken.validateToken, async (req, res) => {
 
     let limit = 5
-    let page = req.query.page
+    let page = req.body
 
-    if (!page) {
-        page = 1
+    if (!page.page) {
+        page.page = 1
     }
 
-    let offset = (limit * page) - limit
+    let validaPage = (await TournamentDAO.Model.count())/page.page
+
+    if(page.page > validaPage){
+        page.page = validaPage
+    }
+
+    let offset = (limit * page.page) - limit
 
     TournamentDAO.list(limit, offset)
         .then(list => {

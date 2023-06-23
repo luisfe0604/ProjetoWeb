@@ -20,16 +20,22 @@ router.get("/game/search/:id", ValidateToken.validateToken, (req, res) => {
         })
 })
 //---------------ROTA DE LISTAR PARTIDAS---------------
-router.get("/game/list", ValidateToken.validateToken, async (req, res) => {
+router.post("/game/list", ValidateToken.validateToken, async (req, res) => {
 
     let limit = 5
-    let page = req.query.page
+    let page = req.body
 
-    if (!page) {
-        page = 1
+    if (!page.page) {
+        page.page = 1
     }
 
-    let offset = (limit * page) - limit
+    let validaPage = (await ChessGameDAO.Model.count())/page.page
+
+    if(page.page > validaPage){
+        page.page = validaPage
+    }
+
+    let offset = (limit * page.page) - limit
 
     ChessGameDAO.list(limit, offset)
         .then(list => {

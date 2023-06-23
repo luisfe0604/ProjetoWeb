@@ -9,16 +9,22 @@ const ValidateToken = require("../validate/token")
 const UserValidator = require("../validate/UserValidator")
 
 //---------------ROTA DE LISTAR PARTIDAS (RATING)---------------
-router.get("/rating/listRating", ValidateToken.validateToken, async (req, res) => {
+router.post("/rating/listRating", ValidateToken.validateToken, async (req, res) => {
 
     let limit = 5
-    let page = req.query.page
+    let page = req.body
 
-    if (!page) {
-        page = 1
+    if (!page.page) {
+        page.page = 1
     }
 
-    let offset = (limit * page) - limit
+    let validaPage = (await ChessGameDAO.Model.count())/page.page
+
+    if(page.page > validaPage){
+        page.page = validaPage
+    }
+
+    let offset = (limit * page.page) - limit
 
     LoginDAO.listByRating(limit, offset)
         .then(list => {
